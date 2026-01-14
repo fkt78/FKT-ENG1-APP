@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soul English v15 | 絶叫ROI測定機能搭載</title>
+    
+    <!-- FKT共通アクセス解析タグ -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVK6J2ZH8W"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BVK6J2ZH8W');
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #0f0202;
+            color: #fff;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .passionate-font {
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1.5px;
+        }
+        .text-shadow-fire {
+            text-shadow: 2px 2px 0px #800, -1px -1px 0 #f00;
+        }
+        .level-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 25px rgba(255, 69, 0, 0.6);
+            border-color: #fbbf24;
+        }
+        .meter-container {
+            box-shadow: 0 0 15px #ff4500, inset 0 0 10px #000;
+        }
+        .shake-hard {
+            animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both infinite;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+        .bg-grid {
+            background-image: linear-gradient(rgba(50, 0, 0, 0.5) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(50, 0, 0, 0.5) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen bg-grid">
+
+    <!-- Header -->
+    <header class="w-full p-4 border-b-2 border-red-900 bg-black/80 backdrop-blur-md sticky top-0 z-50 flex justify-between items-center shadow-lg">
+        <div>
+            <h1 class="text-xl md:text-3xl font-black italic text-red-500 uppercase passionate-font text-shadow-fire">
+                <a href="#" onclick="location.reload()">Soul English v15</a>
+            </h1>
+            <p class="text-[10px] md:text-xs text-red-300">Scream ROI Calculator</p>
+        </div>
+        <div class="text-right">
+            <span class="text-xs text-gray-400 block">COACH STATUS</span>
+            <span class="text-yellow-500 font-bold animate-pulse">ON FIRE</span>
+        </div>
+    </header>
+
+    <!-- 1. Level Select Screen -->
+    <main id="screen-select" class="flex-1 w-full max-w-4xl mx-auto p-4 md:p-8 flex flex-col gap-8">
+        <div class="text-center">
+            <h2 class="text-3xl md:text-5xl font-black mb-2 text-white">SELECT LEVEL</h2>
+            <p class="text-gray-400 text-sm">聞き取り機能は撤去しました。今はただ、その熱量を経済効果（円）に換算します。</p>
+        </div>
+
+        <div class="space-y-4" id="level-container">
+            <!-- Level 1 -->
+            <div onclick="startLevel(1)" class="level-card bg-gray-900 border-2 border-gray-700 p-6 rounded-xl cursor-pointer transition-all relative overflow-hidden group">
+                <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-blue-900/50 to-transparent group-hover:from-blue-600/50 transition-all"></div>
+                <h3 class="text-2xl font-black text-blue-400 passionate-font">LEVEL 1: ONE WORD</h3>
+                <p class="text-white font-bold text-lg mt-1">【初級】一単語・一撃</p>
+                <p class="text-gray-400 text-xs mt-2">一言で状況を変えろ。挨拶、拒絶、助け。</p>
+            </div>
+            <!-- Level 2 -->
+            <div onclick="startLevel(2)" class="level-card bg-gray-900 border-2 border-gray-700 p-6 rounded-xl cursor-pointer transition-all relative overflow-hidden group">
+                <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-green-900/50 to-transparent group-hover:from-green-600/50 transition-all"></div>
+                <h3 class="text-2xl font-black text-green-400 passionate-font">LEVEL 2: PHRASE</h3>
+                <p class="text-white font-bold text-lg mt-1">【中級】二語〜三語・決まり文句</p>
+                <p class="text-gray-400 text-xs mt-2">最低限の意思疎通。感謝、依頼、質問。</p>
+            </div>
+            <!-- Level 3 -->
+            <div onclick="startLevel(3)" class="level-card bg-gray-900 border-2 border-gray-700 p-6 rounded-xl cursor-pointer transition-all relative overflow-hidden group">
+                <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-yellow-900/50 to-transparent group-hover:from-yellow-600/50 transition-all"></div>
+                <h3 class="text-2xl font-black text-yellow-500 passionate-font">LEVEL 3: SENTENCE</h3>
+                <p class="text-white font-bold text-lg mt-1">【上級】短文・感情</p>
+                <p class="text-gray-400 text-xs mt-2">主語と動詞を使いこなせ。自分の状況を主張しろ。</p>
+            </div>
+            <!-- Level 4 -->
+            <div onclick="startLevel(4)" class="level-card bg-gray-900 border-2 border-gray-700 p-6 rounded-xl cursor-pointer transition-all relative overflow-hidden group">
+                <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-orange-900/50 to-transparent group-hover:from-orange-600/50 transition-all"></div>
+                <h3 class="text-2xl font-black text-orange-500 passionate-font">LEVEL 4: COMPLEX</h3>
+                <p class="text-white font-bold text-lg mt-1">【超人】複文・説明</p>
+                <p class="text-gray-400 text-xs mt-2">少し長い文章を一息で叫び切れ。説得力が試される。</p>
+            </div>
+            <!-- Level 5 -->
+            <div onclick="startLevel(5)" class="level-card bg-gray-900 border-2 border-red-600/50 p-6 rounded-xl cursor-pointer transition-all relative overflow-hidden group">
+                <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-red-900 to-transparent group-hover:from-red-600 transition-all"></div>
+                <h3 class="text-3xl font-black text-red-500 passionate-font group-hover:text-red-400">LEVEL 5: CONVERSATION</h3>
+                <p class="text-white font-bold text-lg mt-1">【伝説】対話・長文ラリー</p>
+                <p class="text-gray-400 text-xs mt-2">会話のキャッチボールを制する、トドメの一撃。</p>
+            </div>
+        </div>
+        
+        <!-- Finish Button -->
+        <div class="mt-8 border-t border-gray-800 pt-8 text-center">
+            <button onclick="finishSession()" class="bg-gray-800 hover:bg-gray-700 text-gray-400 font-bold py-4 px-8 rounded-lg w-full md:w-auto transition-colors border border-gray-600">
+                <i class="fas fa-flag-checkered mr-2"></i> レッスンを終了して結果を見る
+            </button>
+        </div>
+    </main>
+
+    <!-- 2. Lesson Screen (Hidden initially) -->
+    <main id="screen-lesson" class="hidden flex-1 w-full max-w-lg mx-auto p-4 flex flex-col items-center gap-4">
+        
+        <!-- Header Info -->
+        <div class="w-full flex justify-between items-center text-xs text-gray-500">
+            <button onclick="backToSelect()" class="hover:text-white underline"><i class="fas fa-arrow-left"></i> LEVEL SELECT</button>
+            <span id="current-level-display" class="font-bold text-red-500">LEVEL ?</span>
+        </div>
+
+        <!-- Coach Area -->
+        <div class="w-full bg-red-900/20 border border-red-600 rounded-xl p-4 flex gap-4 items-start relative overflow-hidden">
+            <div class="absolute -right-4 -bottom-4 text-9xl opacity-10 rotate-12 text-red-500"><i class="fas fa-fire"></i></div>
+            <div class="w-20 h-20 flex-shrink-0 bg-red-600 rounded-full flex items-center justify-center border-4 border-yellow-500 overflow-hidden shadow-lg">
+                <i class="fas fa-user-tie text-4xl text-white"></i>
+            </div>
+            <div class="flex-1 z-10">
+                <div class="text-xs text-red-400 font-bold mb-1">COACH MATSUOKA (AI)</div>
+                <div id="coach-message" class="text-lg font-bold text-white leading-tight">
+                    "準備はいいか？"
+                </div>
+            </div>
+        </div>
+
+        <!-- Situation Info -->
+        <div class="text-center py-2 w-full">
+            <div class="inline-block bg-gray-800 px-3 py-1 rounded text-xs text-gray-400 mb-2" id="situation-category">SITUATION</div>
+            <p id="current-situation-desc" class="text-sm md:text-base text-gray-200 font-bold leading-relaxed">Situation description...</p>
+        </div>
+
+        <!-- The Target Phrase Area -->
+        <div class="w-full bg-black/50 border-2 border-dashed border-gray-600 rounded-lg p-6 text-center relative flex flex-col gap-2">
+            <p class="text-xs text-gray-500">叫ぶ言葉</p>
+            
+            <!-- English -->
+            <p id="target-phrase" class="text-2xl md:text-3xl font-black text-white passionate-font leading-tight break-words">"HELLO!!"</p>
+            
+            <!-- Meaning (Translation) -->
+            <p id="target-meaning" class="text-sm md:text-base font-bold text-yellow-500 border-t border-gray-700 pt-2 mt-1">
+                （ここに意味が表示されます）
+            </p>
+
+            <div class="mt-4 text-xs text-red-400 border border-red-900 inline-block px-2 py-1 rounded self-center">
+                REQUIRED POWER: <span id="req-power">0</span>%
+            </div>
+        </div>
+
+        <!-- Meter -->
+        <div class="w-full mt-2">
+            <div class="w-full h-12 bg-gray-900 rounded-full border-2 border-red-900 overflow-hidden relative meter-container">
+                <div id="passion-bar" class="h-full bg-gradient-to-r from-yellow-700 via-red-600 to-yellow-300 w-0 transition-all duration-75 ease-out flex items-center justify-end pr-2">
+                    <span id="volume-val" class="text-black font-bold text-sm">0%</span>
+                </div>
+                <!-- Threshold Line -->
+                <div id="threshold-line" class="absolute top-0 bottom-0 w-1 bg-white/50 z-10" style="left: 70%"></div>
+            </div>
+        </div>
+
+        <!-- Action Button (Toggle) -->
+        <div class="w-full mt-4 relative">
+            <button id="record-btn" class="w-full py-6 bg-gradient-to-b from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-black text-2xl rounded-xl shadow-[0_5px_0_rgb(100,0,0)] active:shadow-none active:translate-y-[5px] transition-all flex items-center justify-center gap-3 touch-manipulation">
+                <i class="fas fa-microphone"></i> <span id="btn-text">START SCREAMING</span>
+            </button>
+            <p class="text-center text-xs text-gray-500 mt-2">※ボタンを押して叫び、もう一度押して確定！</p>
+        </div>
+
+    </main>
+
+    <!-- 3. Final Summary Screen (Hidden initially) -->
+    <main id="screen-summary" class="hidden flex-1 w-full max-w-2xl mx-auto p-4 flex flex-col items-center justify-center animate-fade-in">
+        <div class="text-center mb-8">
+            <h2 class="text-4xl md:text-6xl font-black text-yellow-500 passionate-font text-shadow-fire mb-2">TODAY'S RESULT</h2>
+            <p class="text-gray-400">本日の熱量測定結果</p>
+        </div>
+
+        <div class="bg-gray-900 border-4 border-red-800 rounded-2xl p-8 w-full text-center relative shadow-[0_0_50px_rgba(255,0,0,0.2)]">
+            <!-- Rank Badge -->
+            <div class="absolute -top-10 left-1/2 transform -translate-x-1/2">
+                <div class="w-24 h-24 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full border-4 border-white flex items-center justify-center shadow-xl">
+                    <i id="summary-icon" class="fas fa-crown text-5xl text-white"></i>
+                </div>
+            </div>
+
+            <div class="mt-12">
+                <p class="text-gray-500 text-sm font-bold uppercase tracking-widest">YOUR RANK</p>
+                <h3 id="summary-rank" class="text-3xl md:text-5xl font-black text-white mt-2 mb-6">RANK NAME</h3>
+                
+                <div class="grid grid-cols-3 gap-4 border-t border-b border-gray-800 py-6 mb-6">
+                    <div>
+                        <p class="text-xs text-gray-500">SCREAMS</p>
+                        <p id="summary-count" class="text-2xl font-bold text-white">0</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">CLEARS</p>
+                        <p id="summary-clears" class="text-2xl font-bold text-green-400">0</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">MAX VOL</p>
+                        <p id="summary-max" class="text-2xl font-bold text-red-500">0%</p>
+                    </div>
+                </div>
+
+                <!-- ROI Display -->
+                <div class="bg-gray-800/80 p-4 rounded-lg text-left mb-4">
+                    <div class="flex justify-between items-center mb-2 border-b border-gray-700 pb-2">
+                        <span class="text-xs text-gray-400">BURNED CALORIES</span>
+                        <span class="text-xl font-bold text-orange-400"><span id="summary-kcal">0.00</span> kcal</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-gray-400">EST. ECONOMIC IMPACT</span>
+                        <span class="text-xl font-bold text-yellow-400">¥<span id="summary-yen">0</span></span>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800/50 p-4 rounded-lg text-left flex gap-4 items-start">
+                    <div class="w-12 h-12 bg-red-900 rounded-full flex-shrink-0 flex items-center justify-center">
+                         <i class="fas fa-user-tie text-xl text-white"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-red-400 font-bold mb-1">COACH COMMENT</p>
+                        <p id="summary-comment" class="text-sm text-gray-300 italic">"..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="location.reload()" class="mt-8 px-8 py-4 bg-white hover:bg-gray-200 text-black font-black text-xl rounded-full shadow-lg transform hover:scale-105 transition-all">
+            BACK TO TITLE
+        </button>
+    </main>
+
+
+    <!-- 4. Battle Result Modal -->
+    <div id="result-modal" class="hidden fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4">
+        <div class="bg-gray-900 border-4 border-yellow-600 p-8 rounded-2xl max-w-sm w-full text-center relative shadow-[0_0_50px_rgba(255,200,0,0.3)]">
+            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-yellow-600 text-black font-black px-4 py-1 rounded shadow-lg text-sm whitespace-nowrap">
+                MISSION RESULT
+            </div>
+            
+            <div id="result-icon" class="text-6xl text-yellow-500 mb-4 mt-2">
+                <i class="fas fa-crown"></i>
+            </div>
+
+            <h2 id="result-title" class="text-4xl font-black text-white mb-2 passionate-font">PERFECT!</h2>
+            
+            <div class="bg-black/50 p-3 rounded mb-4 text-left w-full border border-gray-700">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-xs text-gray-500">ENERGY BURNED</span>
+                    <span class="text-sm font-bold text-orange-400"><span id="res-kcal">0.00</span> kcal</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500">ECONOMIC VALUE</span>
+                    <span class="text-lg font-black text-yellow-400">¥<span id="res-yen">0</span></span>
+                </div>
+            </div>
+
+            <p id="result-comment" class="text-gray-300 text-sm mb-6 leading-relaxed">
+                Good job.
+            </p>
+
+            <div class="grid grid-cols-2 gap-2 mb-6 text-xs bg-black/30 p-2 rounded">
+                <div class="text-gray-500">MAX VOLUME</div>
+                <div class="text-white font-bold" id="res-vol">120%</div>
+                <div class="text-gray-500">PASSION</div>
+                <div class="text-white font-bold text-red-400" id="res-passion">BURNING</div>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <button onclick="nextBattle()" class="w-full py-3 bg-white text-black font-black rounded hover:bg-gray-200 uppercase">
+                    Another Battle (Lv.<span id="next-lvl-btn-val"></span>)
+                </button>
+                <button onclick="backToSelect()" class="w-full py-3 bg-gray-800 text-gray-400 font-bold rounded hover:bg-gray-700 text-xs">
+                    LEVEL SELECT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript -->
+    <script>
+        // --- DATA ---
+        const levelData = {
+            1: [ 
+                { desc: "危険だ！止まれ！", phrase: "STOP!", meaning: "止まれ！", power: 70, cat: "DANGER" },
+                { desc: "タクシーを呼び止める！", phrase: "TAXI!", meaning: "タクシー！", power: 60, cat: "SURVIVAL" },
+                { desc: "助けてくれ！", phrase: "HELP!", meaning: "助けて！", power: 80, cat: "EMERGENCY" },
+                { desc: "同意する！", phrase: "YES!", meaning: "はい！", power: 50, cat: "AGREEMENT" },
+                { desc: "断固拒否する！", phrase: "NO!", meaning: "いいえ！", power: 60, cat: "REFUSAL" },
+                { desc: "友人への挨拶", phrase: "HELLO!", meaning: "こんにちは！", power: 50, cat: "GREETING" },
+                { desc: "すごい！", phrase: "WOW!", meaning: "ワオ！", power: 55, cat: "EMOTION" },
+                { desc: "ごめん！", phrase: "SORRY!", meaning: "ごめん！", power: 60, cat: "APOLOGY" },
+                { desc: "ありがとう！", phrase: "THANKS!", meaning: "ありがとう！", power: 50, cat: "GRATITUDE" },
+                { desc: "行け！", phrase: "GO!", meaning: "行け！", power: 65, cat: "ACTION" },
+                { desc: "誰かいるか！", phrase: "HEY!", meaning: "おい！", power: 60, cat: "CALLING" },
+                { desc: "なぜだ！", phrase: "WHY?", meaning: "なぜ？", power: 65, cat: "QUESTION" },
+                { desc: "いつだ！", phrase: "WHEN?", meaning: "いつ？", power: 55, cat: "QUESTION" },
+                { desc: "誰だ！", phrase: "WHO?", meaning: "誰？", power: 60, cat: "QUESTION" },
+                { desc: "どこだ！", phrase: "WHERE?", meaning: "どこ？", power: 60, cat: "QUESTION" },
+                { desc: "泥棒！", phrase: "THIEF!", meaning: "泥棒！", power: 90, cat: "CRIME" },
+                { desc: "火事だ！", phrase: "FIRE!", meaning: "火事だ！", power: 95, cat: "EMERGENCY" },
+                { desc: "本当に？", phrase: "REALLY?", meaning: "本当に？", power: 55, cat: "QUESTION" },
+                { desc: "お願い！", phrase: "PLEASE!", meaning: "お願い！", power: 70, cat: "REQUEST" },
+                { desc: "気をつけて！", phrase: "WATCH OUT!", meaning: "気をつけて！", power: 80, cat: "WARNING" }, 
+                { desc: "痛い！", phrase: "OUCH!", meaning: "痛い！", power: 75, cat: "PAIN" },
+                { desc: "なんてこった！", phrase: "OPS!", meaning: "おっと！", power: 50, cat: "MISTAKE" },
+                { desc: "乾杯！", phrase: "CHEERS!", meaning: "乾杯！", power: 60, cat: "PARTY" },
+                { desc: "静かに！", phrase: "QUIET!", meaning: "静かに！", power: 70, cat: "ORDER" },
+                { desc: "逃げろ！", phrase: "RUN!", meaning: "走れ（逃げろ）！", power: 85, cat: "ACTION" }
+            ],
+            2: [ 
+                { desc: "感謝を伝える", phrase: "THANK YOU!", meaning: "ありがとうございます！", power: 50, cat: "GRATITUDE" },
+                { desc: "店員を呼ぶ", phrase: "EXCUSE ME!", meaning: "すみません！", power: 60, cat: "CALLING" },
+                { desc: "おはよう", phrase: "GOOD MORNING!", meaning: "おはようございます！", power: 50, cat: "GREETING" },
+                { desc: "自己紹介", phrase: "I AM KEN.", meaning: "私はケンです。", power: 50, cat: "INTRO" },
+                { desc: "値段を聞く", phrase: "HOW MUCH?", meaning: "いくらですか？", power: 60, cat: "SHOPPING" },
+                { desc: "注文する", phrase: "THIS ONE!", meaning: "これください！", power: 60, cat: "ORDER" },
+                { desc: "お会計", phrase: "CHECK PLEASE!", meaning: "お会計お願いします！", power: 65, cat: "ORDER" },
+                { desc: "幸運を祈る", phrase: "GOOD LUCK!", meaning: "頑張って！", power: 60, cat: "CHEER" },
+                { desc: "まさか！", phrase: "NO WAY!", meaning: "ありえない！", power: 70, cat: "SURPRISE" },
+                { desc: "なるほど", phrase: "I SEE!", meaning: "分かりました！", power: 50, cat: "AGREEMENT" },
+                { desc: "さようなら", phrase: "SEE YOU!", meaning: "またね！", power: 50, cat: "FAREWELL" },
+                { desc: "おやすみ", phrase: "GOOD NIGHT!", meaning: "おやすみなさい！", power: 40, cat: "GREETING" },
+                { desc: "元気？", phrase: "HOW ARE YOU?", meaning: "お元気ですか？", power: 55, cat: "GREETING" },
+                { desc: "はじめまして", phrase: "NICE TO MEET YOU.", meaning: "はじめまして。", power: 55, cat: "GREETING" },
+                { desc: "気にしないで", phrase: "NEVER MIND.", meaning: "気にしないで。", power: 50, cat: "COMFORT" },
+                { desc: "よくやった", phrase: "GOOD JOB!", meaning: "よくやった！", power: 60, cat: "PRAISE" },
+                { desc: "私もそう思う", phrase: "ME TOO.", meaning: "私もです。", power: 50, cat: "AGREEMENT" },
+                { desc: "やってみよう", phrase: "LET'S TRY!", meaning: "やってみよう！", power: 65, cat: "ACTION" },
+                { desc: "急げ！", phrase: "HURRY UP!", meaning: "急げ！", power: 80, cat: "ACTION" },
+                { desc: "落ち着いて", phrase: "CALM DOWN.", meaning: "落ち着いて。", power: 40, cat: "COMFORT" },
+                { desc: "気をつけて", phrase: "BE CAREFUL.", meaning: "気をつけて。", power: 60, cat: "WARNING" },
+                { desc: "楽しんで", phrase: "HAVE FUN!", meaning: "楽しんで！", power: 55, cat: "GREETING" },
+                { desc: "お久しぶり", phrase: "LONG TIME NO SEE.", meaning: "お久しぶりです。", power: 60, cat: "GREETING" },
+                { desc: "冗談でしょ？", phrase: "ARE YOU KIDDING?", meaning: "冗談でしょ？", power: 70, cat: "QUESTION" },
+                { desc: "なんてこった", phrase: "OH MY GOD!", meaning: "なんてこった！", power: 75, cat: "SURPRISE" }
+            ],
+            3: [ 
+                { desc: "空腹を訴える", phrase: "I AM HUNGRY!", meaning: "お腹が減りました！", power: 70, cat: "DESIRE" },
+                { desc: "トイレを探す", phrase: "WHERE IS THE TOILET?", meaning: "トイレはどこですか？", power: 80, cat: "EMERGENCY" },
+                { desc: "分からない", phrase: "I DON'T KNOW!", meaning: "知りません！", power: 60, cat: "ANSWER" },
+                { desc: "問題ない", phrase: "NO PROBLEM!", meaning: "問題ありません！", power: 55, cat: "REPLY" },
+                { desc: "別れの挨拶", phrase: "HAVE A NICE DAY!", meaning: "良い一日を！", power: 50, cat: "FAREWELL" },
+                { desc: "迷子になった", phrase: "I AM LOST!", meaning: "道に迷いました！", power: 75, cat: "TROUBLE" },
+                { desc: "美味しい！", phrase: "IT IS DELICIOUS!", meaning: "美味しいです！", power: 60, cat: "PRAISE" },
+                { desc: "助けを求める", phrase: "PLEASE HELP ME!", meaning: "助けてください！", power: 85, cat: "EMERGENCY" },
+                { desc: "時間は金なり", phrase: "TIME IS MONEY!", meaning: "時は金なりです！", power: 70, cat: "PROVERB" },
+                { desc: "同意する", phrase: "I AGREE WITH YOU!", meaning: "あなたに賛成です！", power: 60, cat: "OPINION" },
+                { desc: "疲れた", phrase: "I AM SO TIRED.", meaning: "とても疲れました。", power: 40, cat: "CONDITION" },
+                { desc: "理解した", phrase: "I UNDERSTAND.", meaning: "理解しました。", power: 50, cat: "ANSWER" },
+                { desc: "それはいいね", phrase: "THAT SOUNDS GOOD!", meaning: "それはいいですね！", power: 60, cat: "AGREEMENT" },
+                { desc: "やめてくれ", phrase: "PLEASE STOP IT!", meaning: "やめてください！", power: 75, cat: "REFUSAL" },
+                { desc: "あなたが好きだ", phrase: "I LIKE YOU.", meaning: "あなたが好きです。", power: 65, cat: "LOVE" },
+                { desc: "大丈夫？", phrase: "ARE YOU OKAY?", meaning: "大丈夫ですか？", power: 60, cat: "QUESTION" },
+                { desc: "何時ですか？", phrase: "WHAT TIME IS IT?", meaning: "今何時ですか？", power: 55, cat: "QUESTION" },
+                { desc: "バス停はどこ？", phrase: "WHERE IS THE BUS STOP?", meaning: "バス停はどこですか？", power: 65, cat: "QUESTION" },
+                { desc: "家に帰りたい", phrase: "I WANT TO GO HOME.", meaning: "家に帰りたいです。", power: 50, cat: "DESIRE" },
+                { desc: "喉が渇いた", phrase: "I AM THIRSTY.", meaning: "喉が渇きました。", power: 60, cat: "DESIRE" },
+                { desc: "それは面白い", phrase: "THAT IS FUNNY!", meaning: "それは面白い！", power: 65, cat: "EMOTION" },
+                { desc: "寒すぎる", phrase: "IT IS TOO COLD!", meaning: "寒すぎます！", power: 70, cat: "COMPLAINT" },
+                { desc: "信じられない", phrase: "I CAN'T BELIEVE IT!", meaning: "信じられません！", power: 80, cat: "SURPRISE" },
+                { desc: "準備完了", phrase: "I AM READY!", meaning: "準備万端です！", power: 70, cat: "ACTION" },
+                { desc: "私を見て", phrase: "LOOK AT ME!", meaning: "私を見て！", power: 75, cat: "ATTENTION" }
+            ],
+            4: [ 
+                { desc: "駅に行きたい", phrase: "I WANT TO GO TO THE STATION!", meaning: "駅に行きたいのです！", power: 70, cat: "REQUEST" },
+                { desc: "写真を頼む", phrase: "COULD YOU TAKE A PICTURE?", meaning: "写真を撮っていただけますか？", power: 60, cat: "REQUEST" },
+                { desc: "注文ミスを指摘", phrase: "THIS IS NOT WHAT I ORDERED!", meaning: "これは私が頼んだものではありません！", power: 75, cat: "CLAIM" },
+                { desc: "すぐ戻る", phrase: "I WILL BE BACK SOON!", meaning: "すぐに戻ります！", power: 65, cat: "PROMISE" },
+                { desc: "Wi-Fi確認", phrase: "DO YOU HAVE FREE WI-FI?", meaning: "無料Wi-Fiはありますか？", power: 60, cat: "QUESTION" },
+                { desc: "高すぎる", phrase: "IT IS TOO EXPENSIVE FOR ME!", meaning: "私には高すぎます！", power: 70, cat: "BARGAIN" },
+                { desc: "ここが好きだ", phrase: "I REALLY LOVE THIS PLACE!", meaning: "ここが本当に気に入りました！", power: 75, cat: "EMOTION" },
+                { desc: "電話を借りたい", phrase: "CAN I USE YOUR PHONE?", meaning: "電話をお借りできますか？", power: 75, cat: "EMERGENCY" },
+                { desc: "心配するな", phrase: "DON'T WORRY ABOUT IT!", meaning: "気にしないでください！", power: 60, cat: "COMFORT" },
+                { desc: "誘う", phrase: "LET'S GO THERE TOGETHER!", meaning: "一緒にそこへ行きましょう！", power: 70, cat: "INVITATION" },
+                { desc: "英語が苦手", phrase: "I CANNOT SPEAK ENGLISH WELL.", meaning: "英語はあまりうまく話せません。", power: 50, cat: "EXCUSE" },
+                { desc: "ゆっくり話して", phrase: "PLEASE SPEAK MORE SLOWLY.", meaning: "もっとゆっくり話してください。", power: 60, cat: "REQUEST" },
+                { desc: "意味が分からない", phrase: "I DON'T KNOW WHAT YOU MEAN.", meaning: "おっしゃる意味が分かりません。", power: 65, cat: "ANSWER" },
+                { desc: "パスポートをなくした", phrase: "I LOST MY PASSPORT!", meaning: "パスポートをなくしました！", power: 90, cat: "EMERGENCY" },
+                { desc: "日本に住んでいる", phrase: "I LIVE IN JAPAN.", meaning: "私は日本に住んでいます。", power: 50, cat: "INTRO" },
+                { desc: "仕事を探している", phrase: "I AM LOOKING FOR A JOB.", meaning: "仕事を探しています。", power: 60, cat: "LIFE" },
+                { desc: "予約してある", phrase: "I HAVE A RESERVATION.", meaning: "予約してあります。", power: 60, cat: "CHECKIN" },
+                { desc: "試着してもいい？", phrase: "CAN I TRY THIS ON?", meaning: "これを試着してもいいですか？", power: 55, cat: "SHOPPING" },
+                { desc: "メニューをください", phrase: "MAY I HAVE A MENU?", meaning: "メニューをいただけますか？", power: 55, cat: "ORDER" },
+                { desc: "水をください", phrase: "COULD I HAVE SOME WATER?", meaning: "お水をいただけますか？", power: 55, cat: "ORDER" },
+                { desc: "空港に行きたい", phrase: "I WOULD LIKE TO GO TO THE AIRPORT.", meaning: "空港に行きたいのですが。", power: 65, cat: "REQUEST" },
+                { desc: "遅れてごめん", phrase: "I AM SORRY I AM LATE.", meaning: "遅れてごめんなさい。", power: 70, cat: "APOLOGY" },
+                { desc: "体調が悪い", phrase: "I DON'T FEEL WELL.", meaning: "気分が悪いです。", power: 50, cat: "CONDITION" },
+                { desc: "医者を呼んで", phrase: "PLEASE CALL A DOCTOR!", meaning: "医者を呼んでください！", power: 85, cat: "EMERGENCY" },
+                { desc: "私のバッグがない", phrase: "MY BAG IS MISSING!", meaning: "私のバッグがありません！", power: 85, cat: "TROUBLE" }
+            ],
+            5: [ 
+                { desc: "理解したが同意できない", phrase: "I UNDERSTAND, BUT I CANNOT ACCEPT IT!", meaning: "理解はできますが、受け入れられません！", power: 80, cat: "DEBATE" },
+                { desc: "理由を説明させてくれ", phrase: "LET ME EXPLAIN THE REASON WHY!", meaning: "なぜそうなったか説明させてください！", power: 75, cat: "EXCUSE" },
+                { desc: "君がそう言うなら", phrase: "IF YOU SAY SO, I WILL TRY!", meaning: "あなたがそう言うなら、やってみます！", power: 70, cat: "TRUST" },
+                { desc: "最高のアイデアだ", phrase: "THAT IS THE BEST IDEA I HAVE EVER HEARD!", meaning: "今まで聞いた中で最高のアイデアだ！", power: 85, cat: "PRAISE" },
+                { desc: "待ちくたびれた", phrase: "I HAVE BEEN WAITING FOR YOU FOR A LONG TIME!", meaning: "あなたのことをずっと待っていたんですよ！", power: 90, cat: "COMPLAINT" },
+                { desc: "聞き返す", phrase: "COULD YOU PLEASE SAY THAT AGAIN?", meaning: "もう一度言っていただけますか？", power: 65, cat: "QUESTION" },
+                { desc: "再会を期す", phrase: "I AM LOOKING FORWARD TO SEEING YOU AGAIN!", meaning: "またお会いできるのを楽しみにしています！", power: 75, cat: "FAREWELL" },
+                { desc: "正直に言うと", phrase: "TO BE HONEST, I DON'T LIKE IT!", meaning: "正直に言うと、それは好きではありません！", power: 80, cat: "OPINION" },
+                { desc: "飲みに行こう", phrase: "WHY DON'T WE GO FOR A DRINK TONIGHT?", meaning: "今夜、一杯飲みに行きませんか？", power: 85, cat: "INVITATION" },
+                { desc: "伝説の始まり", phrase: "THIS IS THE BEGINNING OF A NEW LEGEND!", meaning: "これが新しい伝説の始まりだ！", power: 95, cat: "DECLARATION" },
+                { desc: "人生は短い", phrase: "LIFE IS SHORT, SO ENJOY EVERY MOMENT!", meaning: "人生は短い、だから一瞬一瞬を楽しめ！", power: 85, cat: "PHILOSOPHY" },
+                { desc: "夢を諦めるな", phrase: "NEVER GIVE UP ON YOUR DREAMS!", meaning: "夢を決して諦めるな！", power: 90, cat: "CHEER" },
+                { desc: "できると信じてる", phrase: "I BELIEVE THAT YOU CAN DO IT!", meaning: "君ならできると信じている！", power: 80, cat: "TRUST" },
+                { desc: "許してください", phrase: "PLEASE FORGIVE ME FOR WHAT I DID!", meaning: "私のしたことをどうか許してください！", power: 85, cat: "APOLOGY" },
+                { desc: "結婚してください", phrase: "WILL YOU MARRY ME?", meaning: "結婚してくれますか？", power: 99, cat: "LOVE" },
+                { desc: "興味がない", phrase: "I AM NOT INTERESTED IN THAT AT ALL.", meaning: "それには全く興味がありません。", power: 70, cat: "REFUSAL" },
+                { desc: "教えてくれませんか", phrase: "COULD YOU TELL ME HOW TO GET THERE?", meaning: "そこへの行き方を教えてくれませんか？", power: 65, cat: "QUESTION" },
+                { desc: "とても感動した", phrase: "I WAS SO MOVED BY YOUR SPEECH!", meaning: "あなたのスピーチにとても感動しました！", power: 80, cat: "EMOTION" },
+                { desc: "連絡を取り合おう", phrase: "LET'S KEEP IN TOUCH!", meaning: "連絡を取り合いましょう！", power: 70, cat: "FRIENDSHIP" },
+                { desc: "間違いない", phrase: "THERE IS NO DOUBT ABOUT IT.", meaning: "それに疑いの余地はありません。", power: 75, cat: "ASSERTION" },
+                { desc: "最善を尽くす", phrase: "I WILL DO MY BEST NO MATTER WHAT.", meaning: "何があっても最善を尽くします。", power: 85, cat: "PROMISE" },
+                { desc: "時が解決する", phrase: "TIME HEALS ALL WOUNDS.", meaning: "時が全ての傷を癒やしてくれる。", power: 60, cat: "PROVERB" },
+                { desc: "後悔先に立たず", phrase: "IT IS NO USE CRYING OVER SPILT MILK.", meaning: "覆水盆に返らず（こぼれたミルクを嘆いても無駄だ）。", power: 70, cat: "PROVERB" },
+                { desc: "百聞は一見にしかず", phrase: "SEEING IS BELIEVING.", meaning: "百聞は一見にしかず（見ることは信じること）。", power: 70, cat: "PROVERB" },
+                { desc: "愛は勝つ", phrase: "LOVE CONQUERS ALL.", meaning: "愛はすべてに打ち勝つ。", power: 90, cat: "LOVE" }
+            ]
+        };
+
+        const coaches = {
+            pre: [
+                "腹から声を出せ！",
+                "マイクを壊す気でやれ！",
+                "恥を捨てろ！",
+                "隣人に通報される覚悟はあるか？",
+                "喉ではなく魂で叫べ！",
+                "昨日の自分を超えろ！",
+                "地球の裏側まで届けろ！",
+                "声量は筋肉だ！",
+                "ためらうな！叫べ！"
+            ],
+            postSuccess: [
+                "見事だ！鼓膜が破れるかと思ったぞ！",
+                "その声なら国境を超えられる！",
+                "ブラボー！完璧なパッションだ！",
+                "合格だ！だがもっと出せるはずだ！",
+                "素晴らしい！マイクが震えている！",
+                "君の魂、受け取ったぞ！"
+            ],
+            postFail: [
+                "聞こえん！やり直し！",
+                "蚊の鳴くような声だ！",
+                "自信のなさが声に出ているぞ！",
+                "文法を気にするな！音圧を上げろ！",
+                "朝飯食ってないのか？",
+                "声が小さい！出直してこい！"
+            ]
+        };
+
+        // --- Logic (No Web Speech API) ---
+        let audioContext, analyser, microphone, javascriptNode;
+        let isRecording = false;
+        let currentLevel = 1;
+        let currentSituation = null;
+        let maxVolumeInSession = 0;
+        let totalVolumeAccumulated = 0; // For ROI logic
+        let recordingStartTime = 0;
+        let recordingDuration = 0;
+        
+        // Session Statistics
+        let totalBattles = 0;
+        let totalClears = 0;
+        let sessionMaxVolume = 0;
+        let sessionTotalKcal = 0;
+        let sessionTotalYen = 0;
+
+        // Deck System State
+        let deck = {};
+
+        function initDeck(level) {
+            if (!levelData[level]) return;
+            deck[level] = Array.from({length: levelData[level].length}, (_, i) => i);
+            shuffleArray(deck[level]);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function getNextSituationIndex(level) {
+            if (!deck[level] || deck[level].length === 0) {
+                initDeck(level);
+            }
+            return deck[level].pop();
+        }
+
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function startLevel(lvl) {
+            currentLevel = lvl;
+            document.getElementById('screen-select').classList.add('hidden');
+            document.getElementById('screen-lesson').classList.remove('hidden');
+            window.scrollTo(0, 0);
+            
+            if (!deck[lvl]) {
+                initDeck(lvl);
+            }
+            
+            loadRandomSituation();
+        }
+
+        function loadRandomSituation() {
+            const index = getNextSituationIndex(currentLevel);
+            const pool = levelData[currentLevel];
+            currentSituation = pool[index];
+
+            document.getElementById('current-level-display').innerText = `LEVEL ${currentLevel}`;
+            document.getElementById('situation-category').innerText = currentSituation.cat;
+            document.getElementById('current-situation-desc').innerText = currentSituation.desc;
+            document.getElementById('target-phrase').innerText = `"${currentSituation.phrase}"`;
+            document.getElementById('target-meaning').innerText = `(${currentSituation.meaning})`; 
+            document.getElementById('req-power').innerText = currentSituation.power;
+            
+            document.getElementById('coach-message').innerText = getRandomItem(coaches.pre);
+            document.getElementById('threshold-line').style.left = currentSituation.power + '%';
+            
+            resetButtonState();
+            maxVolumeInSession = 0;
+            totalVolumeAccumulated = 0;
+            updateMeter(0);
+        }
+
+        function backToSelect() {
+            document.getElementById('screen-select').classList.remove('hidden');
+            document.getElementById('screen-lesson').classList.add('hidden');
+            document.getElementById('result-modal').classList.add('hidden');
+            if(audioContext) audioContext.suspend();
+            isRecording = false;
+        }
+
+        function nextBattle() {
+            document.getElementById('result-modal').classList.add('hidden');
+            loadRandomSituation(); 
+        }
+
+        function finishSession() {
+            document.getElementById('screen-select').classList.add('hidden');
+            document.getElementById('screen-summary').classList.remove('hidden');
+            
+            let rankName = "見学者";
+            let rankIcon = "fa-user";
+            let rankComment = "一度も叫ばずに帰るのか？ ある意味、賢明な判断だ。";
+            let rankColor = "text-gray-500";
+
+            if (totalBattles > 0) {
+                if (sessionMaxVolume < 30) {
+                    rankName = "小声の妖精";
+                    rankIcon = "fa-feather";
+                    rankComment = "君の声は優しすぎる。もっと世界に怒りをぶつけろ。";
+                    rankColor = "text-blue-300";
+                } else if (sessionMaxVolume < 60) {
+                    rankName = "一般市民";
+                    rankIcon = "fa-user-clock";
+                    rankComment = "普通だ。あまりにも普通すぎる。もっと殻を破れ！";
+                    rankColor = "text-green-400";
+                } else if (sessionMaxVolume < 85) {
+                    rankName = "熱血社員";
+                    rankIcon = "fa-fire";
+                    rankComment = "いい熱量だ！その声があれば、どんなプレゼンも乗り切れる！";
+                    rankColor = "text-orange-500";
+                } else {
+                    rankName = "人間拡声器";
+                    rankIcon = "fa-bullhorn";
+                    rankComment = "素晴らしい！君の声はもはや騒音公害レベルだ！誇りたまえ！";
+                    rankColor = "text-red-500";
+                }
+                
+                if (totalClears >= 10 && sessionMaxVolume >= 90) {
+                    rankName = "伝説の叫び屋";
+                    rankIcon = "fa-dragon";
+                    rankComment = "君の喉はどうなっているんだ？ 病院へ行くことをお勧めする。";
+                    rankColor = "text-yellow-400";
+                }
+            }
+
+            document.getElementById('summary-rank').innerText = rankName;
+            document.getElementById('summary-rank').className = `text-3xl md:text-5xl font-black mt-2 mb-6 ${rankColor}`;
+            document.getElementById('summary-icon').className = `fas ${rankIcon} text-5xl text-white`;
+            
+            document.getElementById('summary-count').innerText = totalBattles;
+            document.getElementById('summary-clears').innerText = totalClears;
+            document.getElementById('summary-max').innerText = sessionMaxVolume + '%';
+            document.getElementById('summary-comment').innerText = rankComment;
+            
+            // New Summary Stats
+            document.getElementById('summary-kcal').innerText = sessionTotalKcal.toFixed(2);
+            document.getElementById('summary-yen').innerText = Math.floor(sessionTotalYen).toLocaleString();
+        }
+
+        const recordBtn = document.getElementById('record-btn');
+        const btnText = document.getElementById('btn-text');
+
+        recordBtn.onclick = async () => {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                await startRecording();
+            }
+        };
+
+        async function startRecording() {
+            if (!audioContext) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+                    analyser.smoothingTimeConstant = 0.3; 
+                    analyser.fftSize = 1024;
+                    microphone.connect(analyser);
+                    analyser.connect(javascriptNode);
+                    javascriptNode.connect(audioContext.destination);
+                    javascriptNode.onaudioprocess = processAudio;
+                } catch (err) {
+                    alert("マイク許可がないと魂（パッション）を測定できません！");
+                    return;
+                }
+            }
+            await audioContext.resume();
+            isRecording = true;
+            maxVolumeInSession = 0;
+            totalVolumeAccumulated = 0;
+            recordingStartTime = Date.now();
+
+            recordBtn.classList.remove('from-red-600', 'to-red-800');
+            recordBtn.classList.add('from-yellow-500', 'to-red-600', 'scale-95');
+            recordBtn.innerHTML = '<i class="fas fa-stop"></i> <span id="btn-text">STOP & JUDGE</span>';
+            document.getElementById('coach-message').innerText = "来い！全力で叫べ！";
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            if(audioContext) audioContext.suspend();
+            
+            recordingDuration = Date.now() - recordingStartTime;
+
+            resetButtonState();
+            document.body.classList.remove('shake-hard');
+            evaluateResult(); 
+        }
+
+        function resetButtonState() {
+            recordBtn.classList.add('from-red-600', 'to-red-800');
+            recordBtn.classList.remove('from-yellow-500', 'to-red-600', 'scale-95');
+            recordBtn.innerHTML = '<i class="fas fa-microphone"></i> <span id="btn-text">START SCREAMING</span>';
+        }
+
+        function processAudio() {
+            if (!isRecording) return;
+            const array = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(array);
+            let values = 0;
+            const length = array.length;
+            for (let i = 0; i < length; i++) { values += array[i]; }
+            const average = values / length;
+            
+            // Mobile optimized sensitivity (v10 logic)
+            let noiseGate = 10; 
+            let adjustedAvg = Math.max(0, average - noiseGate);
+            let volume = Math.min(100, Math.floor(adjustedAvg * 2.0)); 
+            
+            if (volume > maxVolumeInSession) maxVolumeInSession = volume;
+            
+            // Accumulate for ROI logic (only count significant volume)
+            if (volume > 20) {
+                totalVolumeAccumulated += volume;
+            }
+            
+            updateMeter(volume);
+
+            if (volume > currentSituation.power) {
+                document.getElementById('coach-message').innerText = "そうだ！その調子だ！";
+                document.body.classList.add('shake-hard');
+            } else {
+                document.getElementById('coach-message').innerText = "もっと声を出せ！";
+                document.body.classList.remove('shake-hard');
+            }
+        }
+
+        function updateMeter(vol) {
+            const bar = document.getElementById('passion-bar');
+            bar.style.width = vol + '%';
+            document.getElementById('volume-val').innerText = vol + '%';
+            
+            if(currentSituation && vol > currentSituation.power) {
+                bar.classList.remove('from-yellow-700');
+                bar.classList.add('from-yellow-400');
+            } else {
+                bar.classList.add('from-yellow-700');
+                bar.classList.remove('from-yellow-400');
+            }
+        }
+
+        function evaluateResult() {
+            const passed = maxVolumeInSession >= currentSituation.power;
+            const modal = document.getElementById('result-modal');
+            const rTitle = document.getElementById('result-title');
+            const rComment = document.getElementById('result-comment');
+            const rIcon = document.getElementById('result-icon');
+            
+            // --- ROI CALCULATION ---
+            // Fake calorie calculation: Vol * Duration factor
+            // A scream burns surprisingly few calories, but let's exaggerate for fun
+            let kcal = (totalVolumeAccumulated / 1000) * 0.5;
+            if(kcal < 0.01) kcal = 0.01;
+            
+            // Fake Economic Value: Max Vol * Duration * Multiplier
+            // "Your passion generated X yen of value"
+            let yen = (maxVolumeInSession * (recordingDuration / 1000)) * 5; 
+            if (passed) yen *= 2; // Bonus for clearing
+            
+            document.getElementById('res-kcal').innerText = kcal.toFixed(2);
+            document.getElementById('res-yen').innerText = Math.floor(yen).toLocaleString();
+
+            // Update Session Totals
+            totalBattles++;
+            if(passed) totalClears++;
+            if(maxVolumeInSession > sessionMaxVolume) sessionMaxVolume = maxVolumeInSession;
+            sessionTotalKcal += kcal;
+            sessionTotalYen += yen;
+
+            // --- PASSION EVALUATION LOGIC (v14 logic) ---
+            const passionEl = document.getElementById('res-passion');
+            const diff = maxVolumeInSession - currentSituation.power;
+            let passionText = "COOL";
+            let passionColor = "text-blue-400";
+
+            if (diff >= 20) {
+                passionText = "EXPLOSIVE";
+                passionColor = "text-purple-500";
+            } else if (diff >= 10) {
+                passionText = "BURNING";
+                passionColor = "text-red-500";
+            } else if (diff >= 0) {
+                passionText = "HOT";
+                passionColor = "text-orange-400";
+            } else if (diff > -10) {
+                passionText = "COOL";
+                passionColor = "text-blue-300";
+            } else {
+                passionText = "FROZEN";
+                passionColor = "text-blue-600";
+            }
+            passionEl.innerText = passionText;
+            passionEl.className = `text-white font-bold ${passionColor}`;
+
+            modal.classList.remove('hidden');
+            document.getElementById('res-vol').innerText = maxVolumeInSession + '%';
+            document.getElementById('next-lvl-btn-val').innerText = currentLevel;
+
+            if (passed) {
+                rTitle.innerText = "MISSION CLEAR!";
+                rTitle.classList.add('text-yellow-500');
+                rTitle.classList.remove('text-blue-500');
+                rComment.innerText = getRandomItem(coaches.postSuccess);
+                rIcon.innerHTML = '<i class="fas fa-crown"></i>';
+            } else {
+                rTitle.innerText = "FAILED...";
+                rTitle.classList.remove('text-yellow-500');
+                rTitle.classList.add('text-blue-500');
+                rComment.innerText = `声が小さい！必要な熱量は ${currentSituation.power}% だが、君は ${maxVolumeInSession}% しか出していない。\n\n${getRandomItem(coaches.postFail)}`;
+                rIcon.innerHTML = '<i class="fas fa-skull"></i>';
+            }
+        }
+    </script>
+</body>
+</html>
