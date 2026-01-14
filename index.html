@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soul English v15 | 絶叫ROI測定機能搭載</title>
     
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#dc2626">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Soul English">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
     <!-- FKT共通アクセス解析タグ -->
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVK6J2ZH8W"></script>
@@ -1594,6 +1602,36 @@
         // ページ読み込み時に音声認識を初期化
         window.addEventListener('DOMContentLoaded', () => {
             initSpeechRecognition();
+            registerServiceWorker();
+        });
+        
+        // Service Worker登録
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/FKT-ENG1-APP/sw.js')
+                        .then((registration) => {
+                            console.log('ServiceWorker registration successful:', registration.scope);
+                        })
+                        .catch((error) => {
+                            console.log('ServiceWorker registration failed:', error);
+                        });
+                });
+            }
+        }
+        
+        // PWAインストールプロンプト
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('PWA install prompt available');
+        });
+        
+        // インストール済みかチェック
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            deferredPrompt = null;
         });
     </script>
 </body>
