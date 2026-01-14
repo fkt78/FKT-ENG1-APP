@@ -616,15 +616,33 @@
             if (!SpeechRecognition) {
                 console.warn('Speech Recognition is not supported in this browser');
                 isSpeechRecognitionSupported = false;
+                
+                // サポートされていない場合のメッセージ表示
+                const speechArea = document.getElementById('speech-recognition-area');
+                if (speechArea) {
+                    speechArea.classList.remove('hidden');
+                    speechArea.innerHTML = `
+                        <div class="bg-yellow-900/50 rounded-lg p-3 text-left border border-yellow-700">
+                            <p class="text-xs text-yellow-400 mb-1">⚠️ 音声認識機能</p>
+                            <p class="text-xs text-yellow-300">このブラウザでは音声認識がサポートされていません。ChromeまたはEdgeをご利用ください。</p>
+                        </div>
+                    `;
+                }
                 return;
             }
             
             isSpeechRecognitionSupported = true;
-            recognition = new SpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.maxAlternatives = 1;
+            try {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.maxAlternatives = 1;
+                console.log('Speech Recognition initialized successfully');
+            } catch (error) {
+                console.error('Failed to initialize Speech Recognition:', error);
+                isSpeechRecognitionSupported = false;
+            }
             
             recognition.onresult = (event) => {
                 let interimTranscript = '';
@@ -640,14 +658,45 @@
                 }
                 
                 recognizedText = (finalTranscript || interimTranscript).trim().toUpperCase();
+                console.log('Recognized text:', recognizedText);
                 updatePronunciationCheck(recognizedText);
             };
             
             recognition.onerror = (event) => {
                 console.error('Speech recognition error:', event.error);
-                if (event.error === 'no-speech') {
-                    // 音声が検出されない場合は無視
-                    return;
+                
+                // エラーメッセージを表示
+                const feedbackEl = document.getElementById('pronunciation-feedback');
+                if (feedbackEl) {
+                    switch(event.error) {
+                        case 'no-speech':
+                            // 音声が検出されない場合は無視
+                            return;
+                        case 'audio-capture':
+                            feedbackEl.textContent = 'マイクが見つかりません';
+                            feedbackEl.className = 'text-xs text-red-300 mt-2 italic';
+                            break;
+                        case 'not-allowed':
+                            feedbackEl.textContent = 'マイクの許可が必要です';
+                            feedbackEl.className = 'text-xs text-red-300 mt-2 italic';
+                            break;
+                        case 'network':
+                            feedbackEl.textContent = 'ネットワークエラー';
+                            feedbackEl.className = 'text-xs text-red-300 mt-2 italic';
+                            break;
+                        default:
+                            feedbackEl.textContent = `エラー: ${event.error}`;
+                            feedbackEl.className = 'text-xs text-red-300 mt-2 italic';
+                    }
+                }
+            };
+            
+            recognition.onstart = () => {
+                console.log('Speech recognition started');
+                const feedbackEl = document.getElementById('pronunciation-feedback');
+                if (feedbackEl) {
+                    feedbackEl.textContent = '音声を認識中...';
+                    feedbackEl.className = 'text-xs text-blue-300 mt-2 italic';
                 }
             };
             
@@ -670,14 +719,25 @@
             const scoreEl = document.getElementById('pronunciation-score');
             const feedbackEl = document.getElementById('pronunciation-feedback');
             
-            if (!currentSituation || !speechArea) return;
+            if (!currentSituation) return;
+            
+            // 音声認識がサポートされている場合のみ表示
+            if (!isSpeechRecognitionSupported) {
+                if (speechArea) {
+                    speechArea.classList.add('hidden');
+                }
+                return;
+            }
+            
+            if (!speechArea || !recognizedTextEl || !scoreEl || !feedbackEl) return;
             
             speechArea.classList.remove('hidden');
-            recognizedTextEl.textContent = recognizedText || '-';
+            recognizedTextEl.textContent = recognizedText || '音声を待機中...';
             
-            if (!recognizedText) {
+            if (!recognizedText || recognizedText.trim() === '') {
                 scoreEl.textContent = '-';
                 feedbackEl.textContent = '音声を認識中...';
+                feedbackEl.className = 'text-xs text-blue-300 mt-2 italic';
                 return;
             }
             
@@ -871,9 +931,14 @@
             // 音声認識エリアをリセット
             const speechArea = document.getElementById('speech-recognition-area');
             if (speechArea) {
-                speechArea.classList.add('hidden');
+                if (isSpeechRecognitionSupported) {
+                    speechArea.classList.remove('hidden');
+                } else {
+                    speechArea.classList.add('hidden');
+                }
             }
             recognizedText = '';
+            updatePronunciationCheck(''); // リセット
             
             // ビジュアルフィードバックのリセット
             const meterContainer = document.querySelector('.meter-container');
@@ -1058,11 +1123,29 @@
                 if (isSpeechRecognitionSupported && recognition) {
                     try {
                         recognizedText = '';
+                        // 音声認識エリアを表示
+                        const speechArea = document.getElementById('speech-recognition-area');
+                        if (speechArea) {
+                            speechArea.classList.remove('hidden');
+                        }
                         recognition.start();
+                        console.log('Speech recognition started');
                     } catch(e) {
                         // 既に開始されている場合は無視
-                        console.log('Speech recognition already started');
+                        console.log('Speech recognition start error:', e);
+                        // エラーでも再試行
+                        setTimeout(() => {
+                            if (isRecording && recognition) {
+                                try {
+                                    recognition.start();
+                                } catch(e2) {
+                                    console.log('Retry failed:', e2);
+                                }
+                            }
+                        }, 100);
                     }
+                } else {
+                    console.warn('Speech recognition not supported or not initialized');
                 }
                 
                 isRecording = true;
