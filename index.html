@@ -1608,16 +1608,46 @@
         // Service Worker登録
         function registerServiceWorker() {
             if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    // GitHub Pagesのパスに対応
-                    const swPath = './sw.js';
-                    navigator.serviceWorker.register(swPath)
-                        .then((registration) => {
-                            console.log('ServiceWorker registration successful:', registration.scope);
-                        })
-                        .catch((error) => {
-                            console.log('ServiceWorker registration failed:', error);
+                // ページロード後に登録
+                if (document.readyState === 'loading') {
+                    window.addEventListener('load', registerSW);
+                } else {
+                    registerSW();
+                }
+            } else {
+                console.log('Service Worker is not supported in this browser');
+            }
+        }
+        
+        function registerSW() {
+            // GitHub Pagesのパスに対応
+            const swPath = './sw.js';
+            navigator.serviceWorker.register(swPath, { scope: './' })
+                .then((registration) => {
+                    console.log('ServiceWorker registration successful:', registration.scope);
+                    
+                    // 更新チェック
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('New Service Worker available. Refresh to update.');
+                            }
                         });
+                    });
+                })
+                .catch((error) => {
+                    console.error('ServiceWorker registration failed:', error);
+                    // エラーの詳細を表示
+                    if (error.message) {
+                        console.error('Error details:', error.message);
+                    }
+                });
+            
+            // 既存のService Workerの更新をチェック
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.addEventListener('statechange', () => {
+                    console.log('Service Worker state changed:', navigator.serviceWorker.controller.state);
                 });
             }
         }
