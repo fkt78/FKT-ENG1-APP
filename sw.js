@@ -1,11 +1,11 @@
 // Service Worker for Soul English v15 PWA
-const CACHE_NAME = 'soul-english-v15-1.0.0';
+const CACHE_NAME = 'soul-english-v15-1.0.1';
 const urlsToCache = [
-  '/FKT-ENG1-APP/',
-  '/FKT-ENG1-APP/index.html',
-  '/FKT-ENG1-APP/manifest.json',
-  '/FKT-ENG1-APP/icon-192.png',
-  '/FKT-ENG1-APP/icon-512.png'
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // インストール時の処理
