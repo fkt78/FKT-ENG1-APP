@@ -1142,8 +1142,19 @@
                     analyser = audioContext.createAnalyser();
                     microphone = audioContext.createMediaStreamSource(mediaStream);
                     javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
-                    analyser.smoothingTimeConstant = 0.3; 
-                    analyser.fftSize = 1024;
+                    
+                    // デバイス検出
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    
+                    // デバイスごとにAnalyserNodeの設定を調整
+                    if (isMobile) {
+                        analyser.smoothingTimeConstant = 0.3; // モバイル：滑らかに
+                        analyser.fftSize = 1024;
+                    } else {
+                        analyser.smoothingTimeConstant = 0.1; // パソコン：より反応良く
+                        analyser.fftSize = 2048; // より高い解像度
+                    }
+                    
                     microphone.connect(analyser);
                     analyser.connect(javascriptNode);
                     javascriptNode.connect(audioContext.destination);
@@ -1255,17 +1266,63 @@
             if (!isRecording || !analyser || !currentSituation) return;
             
             try {
-                const array = new Uint8Array(analyser.frequencyBinCount);
-                analyser.getByteFrequencyData(array);
-                let values = 0;
-                const length = array.length;
-                for (let i = 0; i < length; i++) { values += array[i]; }
-                const average = values / length;
+                // より正確な音量測定のため、getByteTimeDomainDataも使用
+                const frequencyArray = new Uint8Array(analyser.frequencyBinCount);
+                const timeDomainArray = new Uint8Array(analyser.frequencyBinCount);
+                analyser.getByteFrequencyData(frequencyArray);
+                analyser.getByteTimeDomainData(timeDomainArray);
                 
-                // Mobile optimized sensitivity (v10 logic)
-                let noiseGate = 10; 
-                let adjustedAvg = Math.max(0, average - noiseGate);
-                let volume = Math.min(100, Math.floor(adjustedAvg * 2.0)); 
+                // 周波数データから音量を計算
+                let freqValues = 0;
+                const freqLength = frequencyArray.length;
+                for (let i = 0; i < freqLength; i++) { 
+                    freqValues += frequencyArray[i]; 
+                }
+                const freqAverage = freqValues / freqLength;
+                
+                // 時間領域データから音量を計算（より正確）
+                let timeValues = 0;
+                const timeLength = timeDomainArray.length;
+                for (let i = 0; i < timeLength; i++) {
+                    const normalized = (timeDomainArray[i] - 128) / 128;
+                    timeValues += Math.abs(normalized);
+                }
+                const timeAverage = (timeValues / timeLength) * 100;
+                
+                // デバイス検出
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                const isDesktop = !isMobile;
+                
+                // デバイスごとに感度を調整
+                let noiseGate, multiplier, combinedAverage;
+                
+                if (isDesktop) {
+                    // パソコン：感度を上げる（ノイズゲートを下げ、倍率を上げる）
+                    noiseGate = 5; // モバイルより低く設定
+                    multiplier = 3.5; // モバイルより高く設定
+                    // 時間領域データを重視（より正確）
+                    combinedAverage = (freqAverage * 0.3 + timeAverage * 0.7);
+                } else {
+                    // モバイル：現在の設定を維持
+                    noiseGate = 10;
+                    multiplier = 2.0;
+                    combinedAverage = freqAverage;
+                }
+                
+                let adjustedAvg = Math.max(0, combinedAverage - noiseGate);
+                let volume = Math.min(100, Math.floor(adjustedAvg * multiplier));
+                
+                // デバッグ用（開発時のみ）
+                if (volume === 0 && isDesktop && maxVolumeInSession === 0) {
+                    console.log('Volume debug:', { 
+                        freqAverage, 
+                        timeAverage, 
+                        combinedAverage, 
+                        adjustedAvg, 
+                        volume,
+                        isDesktop 
+                    });
+                } 
                 
                 if (volume > maxVolumeInSession) maxVolumeInSession = volume;
                 
